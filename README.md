@@ -1,4 +1,4 @@
-#boom-bot Discord bot
+# boom-bot Discord bot
 
 A really simple bot that plays a sound clip saved in the same directory whenever someone joins the chat.
 
