@@ -151,6 +151,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+git-ignore/
+
 aliases.py
 
-*.mp3
+tempAnnouncement.mp3
