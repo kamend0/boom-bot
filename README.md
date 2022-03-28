@@ -1,16 +1,14 @@
 # boom-bot Discord bot
 
-A really simple bot that plays a sound clip saved in the same directory whenever someone joins the chat.
+A simple Discord bot with two jobs:
 
+* Play noises (mp3 files in the same directory as main.py) when someone enters chat, or on command (!!play alias).
+* Announce who enters chat by their Discord name, or by a specified alias.
 
-That person cannot just be moving from one voice chat to another, they need to fully disconnect, then connect to the chat that the bot is in.
+The person cannot just be moving from one voice chat to another, they need to fully disconnect, then connect to the chat that the bot is in. Hoping to fix this later.
 
+!!toggleUseful will switch behavior from playing a random mp3 file when someone joins to saying who joined using Google's Text to Speech API. If they don't have an alias specified in aliases.py (a lookup dictionary), their Discord display name will be used - not their server nickname.
 
-As of this build, the commands are:
-
-!!join - the bot will join whichever voice chat you are in, and not play the sound clip; will send a message if you are not in a chat
-
-!!leave - the bot will leave the chat that it's in, and send a message if it isn't in one
-
+Please read through main.py for all commands. They include: join, leave, play, toggleUseful, isUseful.
 
 Uploading for convenience and as a jumping-off point for future projects.
