@@ -16,9 +16,15 @@ client = commands.Bot(command_prefix = '!!', intents = intents)
 
 announcementFileName = "tempAnnouncement.mp3"
 
-sound_files = ['comedy-sound.mp3', 'bruh.mp3', 'aughhh.mp3']
-sound_file_commands = ['boom', 'bruh', 'augh']
-sounds = dict(zip(sound_file_commands, sound_files))
+# alias : filename
+sounds = {
+    'boom' : 'comedy-sound.mp3',
+    'bruh' : 'bruh.mp3',
+    'augh' : 'aughhh.mp3',
+    'will' : 'will-smith.mp3'
+}
+sound_files = list(sounds.values())
+sound_file_commands = list(sounds.keys())
 
 meme_mode = True
 
@@ -27,14 +33,17 @@ meme_mode = True
 
 @client.event
 async def on_ready():
-    print("\nBot launched successfully!\n")
+    print('-'*100 + "\nBot launched successfully!\n" + '-'*100)
 
 @client.event
 async def on_voice_state_update(member, before, after):
-    if member.name == "boom-bot":
+    if member.name == "boom-bot" or not voice:
         return
 
-    if not before.channel and after.channel:
+    # Play sound if user connects to VC, or joins channel bot is in from another
+    if (not before.channel and after.channel) or \
+        ((before.channel != after.channel) and \
+            after.channel == channel):
         if meme_mode:
             voice.play(FFmpegPCMAudio(random.choice(sound_files)))
         else:
@@ -43,7 +52,7 @@ async def on_voice_state_update(member, before, after):
             except:
                 name_of_who_joined = member.name
 
-            announcement_message = "..." + name_of_who_joined + " joined."
+            announcement_message = "..." + name_of_who_joined + " joined " + channel.name
 
             try:
                 gTTS(text = announcement_message,
@@ -63,18 +72,42 @@ async def on_voice_state_update(member, before, after):
 
 @client.command(pass_context = True)
 async def join(ctx):
-    if (ctx.author.voice):
-        channel = ctx.message.author.voice.channel
-        global voice
-        voice = await channel.connect()
-        await ctx.send("Bot is set to play stupid sounds.")     
-    else:
-        await ctx.send(ctx.author.name + ": You have to join a voice channel first.")
+    global channel
+    global voice
+
+    # Switching channels
+    try:
+        if voice and (channel != ctx.message.author.voice.channel):
+            await ctx.guild.voice_client.disconnect()
+            # global channel
+            channel = ctx.message.author.voice.channel
+            # global voice
+            voice = await channel.connect()
+        elif (channel == ctx.message.author.voice.channel):
+            await ctx.send(ctx.author.name + ": I'm already in your voice channel.")
+        # Left previously, now returning
+        else:
+            channel = ctx.message.author.voice.channel
+            voice = await channel.connect()
+            await ctx.send("Bot is set to play stupid sounds.") 
+    # Initial join
+    except:
+        if (ctx.author.voice):
+            channel = ctx.message.author.voice.channel
+            voice = await channel.connect()
+            await ctx.send("Bot is set to play stupid sounds.")     
+        else:
+            await ctx.send(ctx.author.name + ": You have to join a voice channel first.")
 
 @client.command(pass_context = True)
 async def leave(ctx):
-    if (ctx.voice_client):
+    global channel
+    global voice
+
+    if (voice):
         await ctx.guild.voice_client.disconnect()
+        channel = False
+        voice = False
     else:
         await ctx.send(ctx.author.name + ": I'm not in a voice channel.")
 
@@ -97,14 +130,17 @@ async def isUseful(ctx):
 @client.command(pass_context = True)
 async def play(ctx, arg):
     if (ctx.voice_client):
-        if arg.lower() == "any":
-            voice.play(FFmpegPCMAudio(random.choice(sound_files)))
+        if (channel != ctx.message.author.voice.channel):
+            await ctx.send(ctx.author.name + ": I'm not in your voice channel.")
         else:
-            try:
-                voice.play(FFmpegPCMAudio(sounds[arg]))
-            except:
-                await ctx.send(ctx.author.name + ": I don't have that sound. Current options:" + 
-                                '\n' + ', '.join(sound_file_commands) + ", or 'any' for a random one.")
+            if arg.lower() == "any":
+                voice.play(FFmpegPCMAudio(random.choice(sound_files)))
+            else:
+                try:
+                    voice.play(FFmpegPCMAudio(sounds[arg.lower()]))
+                except:
+                    await ctx.send(ctx.author.name + ": I don't have that sound. Current options:" + 
+                                    '\n' + ', '.join(sound_file_commands) + ", or 'any' for a random one.")
     else:
         await ctx.send(ctx.author.name + ": I'm not in a voice channel.")
 

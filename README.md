@@ -2,10 +2,8 @@
 
 A simple Discord bot with two jobs:
 
-* Play noises (mp3 files in the same directory as main.py) when someone enters chat, or on command (!!play alias).
+* Play noises (mp3 files in the same directory as main.py) when someone enters chat, or on command (!!play clip).
 * Announce who enters chat by their Discord name, or by a specified alias.
-
-The person cannot just be moving from one voice chat to another, they need to fully disconnect, then connect to the chat that the bot is in. Hoping to fix this later.
 
 !!toggleUseful will switch behavior from playing a random mp3 file when someone joins to saying who joined using Google's Text to Speech API. If they don't have an alias specified in aliases.py (a lookup dictionary), their Discord display name will be used - not their server nickname.
 
