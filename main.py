@@ -4,6 +4,7 @@ from discord import FFmpegPCMAudio
 import environ
 import random
 from aliases import * # Contains dict of discord name:alias lookups
+from sounds import * # Contains dict of command:filename sound lookups
 from gtts import gTTS
 
 env = environ.Env()
@@ -16,20 +17,14 @@ client = commands.Bot(command_prefix = '!!', intents = intents)
 
 announcementFileName = "tempAnnouncement.mp3"
 
-# alias : filename
-sounds = {
-    'boom' : 'comedy-sound.mp3',
-    'bruh' : 'bruh.mp3',
-    'augh' : 'aughhh.mp3',
-    'will' : 'will-smith.mp3'
-}
-sound_files = list(sounds.values())
-sound_file_commands = list(sounds.keys())
+# command : filename
+sound_files = list(sounds_dict.values())
+sound_file_commands = list(sounds_dict.keys())
 
-meme_mode = True
+meme_mode = False
 
 
-### EVNET HANDLING ###
+##### EVENT HANDLING #####
 
 @client.event
 async def on_ready():
@@ -68,7 +63,7 @@ async def on_voice_state_update(member, before, after):
                     '!!! ' + '-'*100 + ' !!!\n')
 
 
-### COMMANDS ###
+##### COMMANDS #####
 
 @client.command(pass_context = True)
 async def join(ctx):
@@ -89,7 +84,10 @@ async def join(ctx):
         else:
             channel = ctx.message.author.voice.channel
             voice = await channel.connect()
-            await ctx.send("Bot is set to play stupid sounds.") 
+            if meme_mode:
+                await ctx.send("Bot is set to play stupid sounds.")
+            else:
+                await ctx.send("Bot is set to be useful and announce who joined VC.")
     # Initial join
     except:
         if (ctx.author.voice):
@@ -112,6 +110,10 @@ async def leave(ctx):
         await ctx.send(ctx.author.name + ": I'm not in a voice channel.")
 
 @client.command(pass_context = True)
+async def sounds(ctx):
+    await ctx.send("Available sounds (type \"!!play sound\"):\n" + ', '.join(sound_file_commands))
+
+@client.command(pass_context = True)
 async def toggleUseful(ctx):
     global meme_mode
     meme_mode = not meme_mode
@@ -128,6 +130,17 @@ async def isUseful(ctx):
         await ctx.send("Bot is set to be useful.")
 
 @client.command(pass_context = True)
+async def say(ctx, args):
+    try:
+        gTTS(text = args,
+            lang = 'en',
+            slow = True).save(announcementFileName)
+        source = FFmpegPCMAudio(announcementFileName)
+        voice.play(source)
+    except:
+        await ctx.send(ctx.author.name + ": Sorry, something went wrong. Please try again, or tell Kollin to fix me.")
+
+@client.command(pass_context = True)
 async def play(ctx, arg):
     if (ctx.voice_client):
         if (channel != ctx.message.author.voice.channel):
@@ -137,7 +150,7 @@ async def play(ctx, arg):
                 voice.play(FFmpegPCMAudio(random.choice(sound_files)))
             else:
                 try:
-                    voice.play(FFmpegPCMAudio(sounds[arg.lower()]))
+                    voice.play(FFmpegPCMAudio(sounds_dict[arg.lower()]))
                 except:
                     await ctx.send(ctx.author.name + ": I don't have that sound. Current options:" + 
                                     '\n' + ', '.join(sound_file_commands) + ", or 'any' for a random one.")
