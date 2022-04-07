@@ -152,7 +152,3 @@ cython_debug/
 #.idea/
 
 git-ignore/
-
-aliases.py
-
-tempAnnouncement.mp3
