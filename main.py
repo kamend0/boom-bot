@@ -1,11 +1,14 @@
+from audioop import tostereo
 import discord
 from discord.ext import commands
 from discord import FFmpegPCMAudio
 import environ
 import random
 from aliases import * # Contains dict of discord name:alias lookups
-from sounds import * # Contains dict of command:filename sound lookups
+# from sounds import * # Contains dict of command:filename sound lookups
 from gtts import gTTS
+import os
+
 
 env = environ.Env()
 environ.Env.read_env()
@@ -17,10 +20,11 @@ client = commands.Bot(command_prefix = '!!', intents = intents)
 
 announcementFileName = "tempAnnouncement.mp3"
 
-# command : filename
-sound_files = list(sounds_dict.values())
-sound_file_commands = list(sounds_dict.keys())
+sounds_dir = "./sounds/"
+sound_files = [f for f in os.listdir(sounds_dir) if '.mp3' in f]
+sound_file_commands = [sf.replace('.mp3', '') for sf in sound_files]
 
+global meme_mode
 meme_mode = False
 
 
@@ -40,7 +44,7 @@ async def on_voice_state_update(member, before, after):
         ((before.channel != after.channel) and \
             after.channel == channel):
         if meme_mode:
-            voice.play(FFmpegPCMAudio(random.choice(sound_files)))
+            voice.play(FFmpegPCMAudio(sounds_dir + random.choice(sound_files)))
         else:
             try:
                 name_of_who_joined = aliases[member.name]
@@ -93,7 +97,10 @@ async def join(ctx):
         if (ctx.author.voice):
             channel = ctx.message.author.voice.channel
             voice = await channel.connect()
-            await ctx.send("Bot is set to play stupid sounds.")     
+            if meme_mode:
+                await ctx.send("Bot is set to play stupid sounds.")     
+            else:
+                await ctx.send("Bot is set to be useful and announce who joined VC.")
         else:
             await ctx.send(ctx.author.name + ": You have to join a voice channel first.")
 
@@ -147,10 +154,10 @@ async def play(ctx, arg):
             await ctx.send(ctx.author.name + ": I'm not in your voice channel.")
         else:
             if arg.lower() == "any":
-                voice.play(FFmpegPCMAudio(random.choice(sound_files)))
+                voice.play(FFmpegPCMAudio(sounds_dir + random.choice(sound_files)))
             else:
                 try:
-                    voice.play(FFmpegPCMAudio(sounds_dict[arg.lower()]))
+                    voice.play(FFmpegPCMAudio(sounds_dir + arg.lower() + '.mp3'))
                 except:
                     await ctx.send(ctx.author.name + ": I don't have that sound. Current options:" + 
                                     '\n' + ', '.join(sound_file_commands) + ", or 'any' for a random one.")
