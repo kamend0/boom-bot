@@ -51,12 +51,12 @@ async def on_voice_state_update(member, before, after):
             except:
                 name_of_who_joined = member.name
 
-            announcement_message = "..." + name_of_who_joined + " joined " + channel.name
+            announcement_message = "..." + name_of_who_joined + " joined voice chat"
 
             try:
                 gTTS(text = announcement_message,
                     lang = 'en',
-                    slow = True).save(announcementFileName)
+                    slow = False).save(announcementFileName)
                 source = FFmpegPCMAudio(announcementFileName)
                 voice.play(source)
             except Exception as e:
