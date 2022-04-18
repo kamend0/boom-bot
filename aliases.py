@@ -6,7 +6,7 @@ aliases = {
     'Shiba42x' : 'Josh\'s stupid ass',
     'Chief Ponce' : 'Andrew',
     'zjepson' : 'Zac',
-    'willloveslakers' : 'Will',
+    'willloveslakers' : 'Squilliam William Aw-Billiam',
     'Pun_Dorry' : 'Loot Goblin',
     'EstebanCeja' : 'Esteban',
     'art' : 'Sarah Jay enjoyer',
