@@ -148,9 +148,9 @@ async def isUseful(ctx):
     else:
         await ctx.send("Bot is set to be useful.")
 
-# @client.command(pass_context = True)
-# async def help(ctx):
-#     await ctx.send(help_message)
+@client.command(pass_context = True)
+async def helpme(ctx):
+    await ctx.send(help_message)
 
 @client.command(pass_context = True)
 async def say(ctx, args):
