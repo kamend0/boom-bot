@@ -181,14 +181,17 @@ async def status(ctx):
 
 @client.command(pass_context = True)
 async def say(ctx, args):
-    try:
-        gTTS(text = args,
-            lang = 'en',
-            slow = True).save(announcementFileName)
-        source = FFmpegPCMAudio(announcementFileName)
-        voice.play(source)
-    except:
-        await ctx.send(ctx.author.name + ": Sorry, something went wrong. Please try again, or tell Kollin to fix me.")
+    if len(args) > 240:
+        await ctx.send("Message must be 240 characters or less.")
+    else:
+        try:
+            gTTS(text = args,
+                lang = 'en',
+                slow = True).save(announcementFileName)
+            source = FFmpegPCMAudio(announcementFileName)
+            voice.play(source)
+        except:
+            await ctx.send(ctx.author.name + ": Sorry, something went wrong. Please try again, or tell Kollin to fix me.")
 
 @client.command(pass_context = True)
 async def play(ctx, arg):
