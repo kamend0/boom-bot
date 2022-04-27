@@ -63,8 +63,10 @@ async def on_voice_state_update(member, before, after):
     if (not before.channel and after.channel) or \
         ((before.channel != after.channel) and \
             after.channel == channel):
-        if (bot_mode == "announcer"):
+        if (bot_mode == "random"):
             voice.play(FFmpegPCMAudio(sounds_dir + random.choice(sound_files)))
+        elif (bot_mode == "sound"):
+            voice.play(FFmpegPCMAudio(sounds_dir + announce_sound))
         else:
             try:
                 name_of_who_joined = aliases[member.name]
@@ -168,9 +170,11 @@ async def set(ctx, arg):
 
 @client.command(pass_context = True)
 async def status(ctx):
+    global bot_mode
+
     if (bot_mode in ["announcer", "random"]):
         await ctx.send("Bot is set to " + bot_mode + " mode.")
-    elif (bot_mode in sound_file_commands):
+    elif (bot_mode == "sound"):
         await ctx.send("Bot set to play " + announce_sound + " when someone joins VC.")
     else:
         await ctx.send("Something is wrong, tell Kollin.")
