@@ -30,14 +30,20 @@ bot_mode = "announcer"
 global announce_sound
 announce_sound = "boom.mp3"
 
+welcome_message = """
+Hi! Type \"!!helpme\" to see available commands.
+Bot can be set to (!!set...): 'announcer', 'random', or the name of a sound clip.
+See available sounds with \"!!sounds\".
+"""
+
 help_message = """
-    Boom bot plays sounds. Commands:
+Boom bot plays sounds. Commands:
     !!join - join the voice channel you are in.
     !!leave - leave whatever voice channel the bot is in.
     !!play sound - where "sound" is an available sound clip.
     !!sounds - show available sound clips.
-    !!toggleUseful - switch between bot playing random meme sound when someone joins chat, and their name/alias.
-    !!isUseful - is the bot announcing people's names that join chat?
+    !!set - change bot behavior.
+    !!status - see what bot is set to do.
     !!say "text" - say the text you provide.
 """
 
@@ -103,17 +109,21 @@ async def join(ctx):
         else:
             channel = ctx.message.author.voice.channel
             voice = await channel.connect()
+            await ctx.send(welcome_message)
+
             if bot_mode == "random":
                 await ctx.send("Bot is set to play random stupid sounds.")
             elif bot_mode == "sound":
                 await ctx.send("Bot is set to play '", + announce_sound, "' when someone enters VC.")
             else:
                 await ctx.send("Bot is set to be useful and announce who joined VC.")
-    # Initial join
+    # Initial join - voice object errors out above block
     except:
         if (ctx.author.voice):
             channel = ctx.message.author.voice.channel
             voice = await channel.connect()
+            await ctx.send(welcome_message)
+
             if bot_mode == "random":
                 await ctx.send("Bot is set to play random stupid sounds.")
             elif bot_mode == "sound":
@@ -138,22 +148,6 @@ async def leave(ctx):
 @client.command(pass_context = True)
 async def sounds(ctx):
     await ctx.send("Available sounds (type \"!!play sound\"):\n" + ', '.join(sound_file_commands))
-
-# @client.command(pass_context = True)
-# async def toggleUseful(ctx):
-#     global meme_mode
-#     meme_mode = not meme_mode
-#     if meme_mode:
-#         await ctx.send("Bot will play stupid sounds.")
-#     else:
-#         await ctx.send("Bot will be useful and announce who joined VC.")
-
-# @client.command(pass_context = True)
-# async def isUseful(ctx):
-#     if meme_mode:
-#         await ctx.send("Bot is set to play stupid sounds.")
-#     else:
-#         await ctx.send("Bot is set to be useful.")
 
 @client.command(pass_context = True)
 async def helpme(ctx):
