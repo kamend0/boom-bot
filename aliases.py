@@ -1,6 +1,6 @@
 aliases = {
     'koopakev' : 'Kevin, who loves women,',
-    'FlyinFunk' : 'Sammy-Wammy with that wet wet 3000, gushing gawker-walker throat goat,',
+    'FlyinFunk' : 'Sammy, the throat goat,',
     'kamendo' : 'My father',
     'tonto' : 'Peter',
     'Shiba42x' : 'Josh\'s stupid ass',

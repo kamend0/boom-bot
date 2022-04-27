@@ -27,6 +27,17 @@ sound_file_commands = [sf.replace('.mp3', '') for sf in sound_files]
 global meme_mode
 meme_mode = False
 
+help_message = """
+    Boom bot plays sounds. Commands:
+    !!join - join the voice channel you are in.
+    !!leave - leave whatever voice channel the bot is in.
+    !!play sound - where "sound" is an available sound clip.
+    !!sounds - show available sound clips.
+    !!toggleUseful - switch between bot playing random meme sound when someone joins chat, and their name/alias.
+    !!isUseful - is the bot announcing people's names that join chat?
+    !!say "text" - say the text you provide.
+"""
+
 
 ##### EVENT HANDLING #####
 
@@ -136,6 +147,10 @@ async def isUseful(ctx):
         await ctx.send("Bot is set to play stupid sounds.")
     else:
         await ctx.send("Bot is set to be useful.")
+
+@client.command(pass_context = True)
+async def help(ctx):
+    await ctx.send(help_message)
 
 @client.command(pass_context = True)
 async def say(ctx, args):
