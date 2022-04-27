@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 
 git-ignore/
+main-stable.py

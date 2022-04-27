@@ -24,8 +24,11 @@ sounds_dir = "./sounds/"
 sound_files = [f for f in os.listdir(sounds_dir) if '.mp3' in f]
 sound_file_commands = [sf.replace('.mp3', '') for sf in sound_files]
 
-global meme_mode
-meme_mode = False
+# bot_modes = ["announcer", "random", "sound"]
+global bot_mode
+bot_mode = "announcer"
+global announce_sound
+announce_sound = "boom.mp3"
 
 help_message = """
     Boom bot plays sounds. Commands:
@@ -54,7 +57,7 @@ async def on_voice_state_update(member, before, after):
     if (not before.channel and after.channel) or \
         ((before.channel != after.channel) and \
             after.channel == channel):
-        if meme_mode:
+        if (bot_mode == "announcer"):
             voice.play(FFmpegPCMAudio(sounds_dir + random.choice(sound_files)))
         else:
             try:
@@ -100,8 +103,10 @@ async def join(ctx):
         else:
             channel = ctx.message.author.voice.channel
             voice = await channel.connect()
-            if meme_mode:
-                await ctx.send("Bot is set to play stupid sounds.")
+            if bot_mode == "random":
+                await ctx.send("Bot is set to play random stupid sounds.")
+            elif bot_mode == "sound":
+                await ctx.send("Bot is set to play '", + announce_sound, "' when someone enters VC.")
             else:
                 await ctx.send("Bot is set to be useful and announce who joined VC.")
     # Initial join
@@ -109,8 +114,10 @@ async def join(ctx):
         if (ctx.author.voice):
             channel = ctx.message.author.voice.channel
             voice = await channel.connect()
-            if meme_mode:
-                await ctx.send("Bot is set to play stupid sounds.")     
+            if bot_mode == "random":
+                await ctx.send("Bot is set to play random stupid sounds.")
+            elif bot_mode == "sound":
+                await ctx.send("Bot is set to play '", + announce_sound, "' when someone enters VC.")
             else:
                 await ctx.send("Bot is set to be useful and announce who joined VC.")
         else:
@@ -132,25 +139,47 @@ async def leave(ctx):
 async def sounds(ctx):
     await ctx.send("Available sounds (type \"!!play sound\"):\n" + ', '.join(sound_file_commands))
 
-@client.command(pass_context = True)
-async def toggleUseful(ctx):
-    global meme_mode
-    meme_mode = not meme_mode
-    if meme_mode:
-        await ctx.send("Bot will play stupid sounds.")
-    else:
-        await ctx.send("Bot will be useful and announce who joined VC.")
+# @client.command(pass_context = True)
+# async def toggleUseful(ctx):
+#     global meme_mode
+#     meme_mode = not meme_mode
+#     if meme_mode:
+#         await ctx.send("Bot will play stupid sounds.")
+#     else:
+#         await ctx.send("Bot will be useful and announce who joined VC.")
 
-@client.command(pass_context = True)
-async def isUseful(ctx):
-    if meme_mode:
-        await ctx.send("Bot is set to play stupid sounds.")
-    else:
-        await ctx.send("Bot is set to be useful.")
+# @client.command(pass_context = True)
+# async def isUseful(ctx):
+#     if meme_mode:
+#         await ctx.send("Bot is set to play stupid sounds.")
+#     else:
+#         await ctx.send("Bot is set to be useful.")
 
 @client.command(pass_context = True)
 async def helpme(ctx):
     await ctx.send(help_message)
+
+@client.command(pass_context = True)
+async def set(ctx, arg):
+    global bot_mode
+    global announce_sound
+
+    if (arg.lower() in ["announcer", "random"]):
+        bot_mode = arg.lower()
+        await ctx.send("Bot set to " + bot_mode + " mode.")
+    elif (arg.lower() in sound_file_commands):
+        bot_mode = "sound"
+        announce_sound = arg.lower() + ".mp3"
+        await ctx.send("Bot set to play " + announce_sound + " when someone joins VC.")
+
+@client.command(pass_context = True)
+async def status(ctx):
+    if (bot_mode in ["announcer", "random"]):
+        await ctx.send("Bot is set to " + bot_mode + " mode.")
+    elif (bot_mode in sound_file_commands):
+        await ctx.send("Bot set to play " + announce_sound + " when someone joins VC.")
+    else:
+        await ctx.send("Something is wrong, tell Kollin.")
 
 @client.command(pass_context = True)
 async def say(ctx, args):
