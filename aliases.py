@@ -2,7 +2,7 @@ aliases = {
     'koopakev' : 'Kevin, who loves women,',
     'FlyinFunk' : 'Sammy, the throat goat,',
     'kamendo' : 'My father',
-    'tonto' : 'Peter',
+    'tonto' : 'Low Tier God Enjoyer',
     'Shiba42x' : 'Josh\'s stupid ass',
     'Chief Ponce' : 'Andrew',
     'zjepson' : 'Zac',

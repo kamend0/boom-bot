@@ -8,6 +8,7 @@ from aliases import * # Contains dict of discord name:alias lookups
 # from sounds import * # Contains dict of command:filename sound lookups
 from gtts import gTTS
 import os
+import time
 
 
 env = environ.Env()
@@ -81,6 +82,7 @@ async def on_voice_state_update(member, before, after):
                     lang = 'en',
                     slow = False).save(announcementFileName)
                 source = FFmpegPCMAudio(announcementFileName)
+                time.sleep(0.5) # This lets the person who joined hear it
                 voice.play(source)
             except Exception as e:
                 print('\n!!! ' + '-'*100 + ' !!!' +
