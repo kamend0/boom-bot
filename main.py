@@ -115,6 +115,13 @@ async def join(ctx):
             voice = await channel.connect()
             await ctx.send(welcome_message)
 
+            # Have bot announce itself
+            time.sleep(0.5)
+            gTTS(text = "The bot joined voice chat.",
+                lang = 'en',
+                slow = True).save(announcementFileName)
+            voice.play(FFmpegPCMAudio(announcementFileName))
+
             if bot_mode == "random":
                 await ctx.send("Bot is set to play random stupid sounds.")
             elif bot_mode == "sound":
