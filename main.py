@@ -120,7 +120,8 @@ async def join(ctx):
             gTTS(text = "The bot joined voice chat.",
                 lang = 'en',
                 slow = True).save(announcementFileName)
-            voice.play(FFmpegPCMAudio(announcementFileName))
+            source = FFmpegPCMAudio(announcementFileName)
+            voice.play(source)
 
             if bot_mode == "random":
                 await ctx.send("Bot is set to play random stupid sounds.")
