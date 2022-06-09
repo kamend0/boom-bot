@@ -15,5 +15,6 @@ aliases = {
     'WTFSomebodyActually' : 'Harbey',
     'Chon Wang' : 'Kuya boy',
     'Chankles' : 'Charles',
-    'Scuzi' : 'Scooter'
+    'Scuzi' : 'Scooter',
+    'jedipoop' : 'Jedi Poop'
 }
