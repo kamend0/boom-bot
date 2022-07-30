@@ -153,3 +153,4 @@ cython_debug/
 
 git-ignore/
 main-stable.py
+yt-dl.py
