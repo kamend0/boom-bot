@@ -12,7 +12,7 @@ aliases = {
     'art' : 'Sarah Jay enjoyer',
     'BigStinky' : 'Steve, of all fucking people',
     'Crymacho' : 'Alex, who hates women,',
-    'WTFSomebodyActually' : 'Harbey',
+    'WTFSomebodyActually' : 'Banjo Blast Barvy',
     'Chon Wang' : 'Kuya boy',
     'Chankles' : 'Charles',
     'Scuzi' : 'Scooter',
